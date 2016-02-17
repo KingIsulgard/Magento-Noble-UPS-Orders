@@ -16,7 +16,8 @@ class Noble_UPSOrders_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Bl
         parent::__construct();
         $this->setId('noble_upsorders_grid');
         $this->setUseAjax(true);
-        $this->setDefaultSort('increment_id');
+		$this->setDefaultFilter(array('status' => 'processing'));
+        $this->setDefaultSort('created_at');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
     }
@@ -62,6 +63,10 @@ class Noble_UPSOrders_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Bl
 		
 		if(Mage::getStoreConfig('noble/extended_columns/remote_ip')) {
 			$orderFields["remote_ip"] = "remote_ip";
+		}
+		
+		if(Mage::getStoreConfig('noble/extended_columns/coupon_code')) {
+			$orderFields["coupon_code"] = "coupon_code";
 		}
 		
 		if(Mage::getStoreConfig('noble/extended_columns/billing_country')) {
@@ -229,17 +234,6 @@ class Noble_UPSOrders_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Bl
 			));
 		}
 		
-		if(Mage::getStoreConfig('noble/extended_columns/shipping_method')) {
-			$this->addColumn('shipping_method', array(
-				'header' => $this->__('Shipping method'),
-				'index' => 'shipping_method',
-				'filter_index' => 'sfo.shipping_method', 
-				'type' => 'options',
-				'options' => $this->getShippingMethodOptions(),
-				'renderer' => 'Noble_AdminOrderGrid_Block_Sales_Order_Grid_Renderer_Shippingmethod'
-			));
-		}
-		
 		if(Mage::getStoreConfig('noble/extended_columns/customer_email')) {
 			$this->addColumn('customer_email', array(
 				'header' => $this->__('Customer email'),
@@ -357,6 +351,14 @@ class Noble_UPSOrders_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Bl
 			));
 		}
 		
+		if(Mage::getStoreConfig('noble/extended_columns/coupon_code')) {
+			$this->addColumn('coupon_code', array(
+				'header' => $this->__('Coupon code'),
+				'index' => 'coupon_code',
+				'filter_index' => 'sfo.coupon_code'
+			));
+		}
+		
 		if(Mage::getStoreConfig('noble/default_columns/action')) {
 			if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/view')) {
 				$this->addColumn('action',
@@ -468,37 +470,6 @@ class Noble_UPSOrders_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Bl
             ->load()
             ->toOptionHash();
 			
-        return $options;
-    }
-	
-    /**
-     * Returns possible filters for ShippingMethod column.
-     *
-     * @return array
-     */
-    public function getShippingMethodOptions()
-    {
-        $options = array();
-        $optionText = "";
-        $collection = Mage::getModel('sales/order')->getCollection()->addFieldToSelect('shipping_method');
-        $collection->getSelect()->group('shipping_method');
-        foreach ($collection as $option) {
-			$optionText = "";
-			
-            if ($option->getShippingMethod() == "dpdparcelshops_dpdparcelshops") {
-                $optionText = 'DPD parcelshop';
-            } elseif ($option->getShippingMethod() == "dpdclassic_dpdclassic") {
-                $optionText = 'DPD classic';
-            } elseif ($option->getShippingMethod() == "freeshipping_freeshipping") {
-                $optionText = 'Afhalen bureau';
-            } elseif ($option->getShippingMethod() == "ups_03") {
-                $optionText = 'UPS Ground';
-            }
-			
-			if($optionText) {
-            	$options[$option->getShippingMethod()] = $optionText;
-			}
-        }
         return $options;
     }
 	

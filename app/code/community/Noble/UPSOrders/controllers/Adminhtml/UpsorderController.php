@@ -4,10 +4,10 @@
  * @package      Noble_UPSOrders
  * @author       Gilles Lesire
  *
- * Class Noble_UPSOrders_Adminhtml_OrderController
+ * Class Noble_UPSOrders_Adminhtml_UPS_OrderController
  * Controller for the designated order grid
  */
-class Noble_UPSOrders_Adminhtml_OrderController extends Mage_Adminhtml_Controller_Action
+class Noble_UPSOrders_Adminhtml_UpsorderController extends Mage_Adminhtml_Controller_Action
 {
     public function indexAction()
     {
