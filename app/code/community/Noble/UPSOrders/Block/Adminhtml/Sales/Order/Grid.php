@@ -41,6 +41,10 @@ class Noble_UPSOrders_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Bl
 		
 		$orderFields["shipping_method"] = "shipping_method";
 		
+		if(Mage::getStoreConfig('noble/extended_columns/shipping_description')) {
+			$orderFields["shipping_description"] = "shipping_description";
+		}
+		
 		if(Mage::getStoreConfig('noble/extended_columns/customer_email')) {
 			$orderFields["customer_email"] = "customer_email";
 		}
@@ -238,6 +242,13 @@ class Noble_UPSOrders_Block_Adminhtml_Sales_Order_Grid extends Mage_Adminhtml_Bl
 			$this->addColumn('customer_email', array(
 				'header' => $this->__('Customer email'),
 				'index' => 'customer_email'
+			));
+		}
+		
+		if(Mage::getStoreConfig('noble/extended_columns/shipping_description')) {
+			$this->addColumn('shipping_description', array(
+				'header' => $this->__('Shipping Description'),
+				'index' => 'shipping_description'
 			));
 		}
 		
